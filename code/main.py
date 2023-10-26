@@ -205,7 +205,7 @@ def eh_pedra(p: any) -> bool:
         return False
 
     # Check if pedra is one of the defined values
-    return p in (1, 2, 3)
+    return p in (0, 1, 2)
 
 
 # Verify if pedra is white
@@ -294,11 +294,17 @@ def cria_goban(
 
     return go
 
+
 # Creates a copy of the goban
 def cria_copia_goban(go: goban) -> goban:
     return go
 
+
 # Return the pedra in a given intersecao
+def obtem_pedra(go: goban, inter: intersecao) -> pedra:
+    inter = convert_intersecao(inter)
+    return go[inter[0]][inter[1]]
+
 
 # Return a valid last intersection (top right) based on the territory
 def obtem_ultima_intersecao(go: goban) -> intersecao:
@@ -313,6 +319,53 @@ def obtem_ultima_intersecao(go: goban) -> intersecao:
     - A intersecao with a string and an integer representing the coordinates of the last intersection (top right) of the goban.
     """
     return cria_intersecao(chr((ord("A") - 1) + len(go)), len(go[0]))
+
+
+# Return the chain of intersections
+def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
+    """
+    Returns a sequence of adjacent intersections that have the same value in a goban.
+
+    Args:
+    - go: a goban, where each element is a intersecao representing a column of the goban.
+    Each cell of the column can be either 0 or 1.
+    - intersecao: A intersecao containing a string and an integer
+
+    Returns:
+    - A tuple of intersections representing a sequence of adjacent intersections that have the same value in the goban.
+
+    Raises:
+    - ValueError: If the given goban or intersection are invalid.
+    """
+    # Check if goban and intersection are valid
+    if not eh_goban(go) or not eh_intersecao(inter):
+        raise ValueError("obtem_cadeia: argumentos invalidos")
+
+    # Check if intersecao is part of goban
+    if not eh_intersecao_valida(go, inter):
+        raise ValueError("obtem_cadeia: argumentos invalidos")
+
+    # Check if intersecao is free
+    is_free = obtem_pedra(go, inter)
+    visited = []
+
+    # Create recursive function to check if the adjacent intersections are also the same as freedom
+    def recursive_check(go, inter, visited):
+        # Add the intersecao to the list
+        chain = (inter,)
+        visited += chain
+
+        # Check if the adjacent intersections are equal to the freedom
+        for inter in obtem_intersecoes_adjacentes(go, inter):
+            if inter not in visited and obtem_pedra(go, inter) == is_free:
+                chain += recursive_check(go, inter, visited)
+
+        return chain
+
+    # Get the list of interceptions
+    chain = recursive_check(go, inter, visited)
+
+    return ordena_intersecoes(chain)
 
 
 # Verify if is goban
