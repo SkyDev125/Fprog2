@@ -368,6 +368,27 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
     return ordena_intersecoes(chain)
 
 
+# Place a pedra in goban
+def coloca_pedra(go: goban, inter: intersecao, p: pedra) -> goban:
+    inter = convert_intersecao(inter)
+    go[inter[0]][inter[1]] = p
+    return go
+
+
+# Remove a pedra in goban
+def remove_pedra(go: goban, inter: intersecao) -> goban:
+    inter = convert_intersecao(inter)
+    go[inter[0]][inter[1]] = cria_pedra_neutra()
+    return go
+
+
+# Remove a chain of stones in goban
+def remove_cadeia(go: goban, chain: tuple[intersecao]) -> goban:
+    for inter in chain:
+        go = remove_pedra(go, inter)
+    return go
+
+
 # Verify if is goban
 def eh_goban(go: any) -> bool:
     """
@@ -438,13 +459,6 @@ def eh_intersecao_valida(go: goban, inter: intersecao) -> bool:
 
     # Check if the line is larger than the maximum allowed for lines
     return line <= max_lines
-
-
-# Place a pedra in goban
-def coloca_pedra(go: goban, inter: intersecao, p: pedra) -> goban:
-    inter = convert_intersecao(inter)
-    go[inter[0]][inter[1]] = p
-    return go
 
 
 """
