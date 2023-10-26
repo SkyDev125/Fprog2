@@ -58,17 +58,17 @@ def cria_intersecao(column: str, line: int) -> intersecao:
 
 
 # Return the column of intersecao
-def obtem_col(intersecao: intersecao) -> str:
-    return intersecao[0]
+def obtem_col(inter: intersecao) -> str:
+    return inter[0]
 
 
 # Return the line of intersecao
-def obtem_lin(intersecao: intersecao) -> int:
-    return intersecao[1]
+def obtem_lin(inter: intersecao) -> int:
+    return inter[1]
 
 
-# Verify if the intercesao is valid
-def eh_intersecao(intersecao: any) -> bool:
+# Verify if the intersecao is valid
+def eh_intersecao(inter: any) -> bool:
     """
     Verifies if the given intersection is valid.
 
@@ -79,55 +79,55 @@ def eh_intersecao(intersecao: any) -> bool:
     - True if the intersection is valid, False otherwise.
     """
     # Check if the intersecao is a tuple
-    if not isinstance(intersecao, tuple):
+    if not isinstance(inter, tuple):
         return False
 
     # Check if the intersecao is the expected size
-    if len(intersecao) != 2:
+    if len(inter) != 2:
         return False
 
     # Create a set with all the valid strings
     valid_strings = {chr(ord("A") + i) for i in range(19)}
 
     # Check if the first element is a string
-    if not isinstance(intersecao[0], str):
+    if not isinstance(inter[0], str):
         return False
 
     # Check if the second element is a int
-    if type(intersecao[1]) != int:
+    if type(inter[1]) != int:
         return False
 
     # Check if the first element is a valid string
-    if intersecao[0] not in valid_strings:
+    if inter[0] not in valid_strings:
         return False
 
     # Check if the second element is a valid int
-    return 1 <= intersecao[1] <= 19
+    return 1 <= inter[1] <= 19
 
 
-# Verify if the interceptions are equal
-def intersecoes_iguais(intersecao1: any, intersecao2: any) -> bool:
+# Verify if the intersections are equal
+def intersecoes_iguais(inter1: any, inter2: any) -> bool:
     # Check if intersecao1 and intersecao2 are valid
-    if not eh_intersecao(intersecao1) or not eh_intersecao(intersecao2):
+    if not eh_intersecao(inter1) or not eh_intersecao(inter2):
         return False
 
-    return intersecao1 == intersecao2
+    return inter1 == inter2
 
 
 # Tranform intersecao in string
-def intersecao_para_str(intersecao: intersecao) -> str:
-    return obtem_col(intersecao) + str(obtem_lin(intersecao))
+def intersecao_para_str(inter: intersecao) -> str:
+    return obtem_col(inter) + str(obtem_lin(inter))
 
 
 # Transform string into intersecao
-def str_para_intersecao(intersecao: str) -> intersecao:
-    return cria_intersecao(intersecao[0], int(intersecao[1:]))
+def str_para_intersecao(inter: str) -> intersecao:
+    return cria_intersecao(inter[0], int(inter[1:]))
 
 
-# Return the adjacent interceptions
+# Return the adjacent intersections
 def obtem_intersecoes_adjacentes(
-    intersecao: intersecao, last_inter: intersecao
-) -> tuple:
+    inter: intersecao, last_inter: intersecao
+) -> tuple[intersecao]:
     """
     Returns the adjacent intersections of the given intersection in the territory.
 
@@ -139,23 +139,23 @@ def obtem_intersecoes_adjacentes(
     - A tuple containing the adjacent intersections of the given intersection in the territory,
     where each element is a tuple containing the column as a string and the line as an integer.
     """
-    collumn, line = convert_intersecao((obtem_col(intersecao), obtem_lin(intersecao)))
+    collumn, line = convert_intersecao((obtem_col(inter), obtem_lin(inter)))
     max_collumns, max_lines = (obtem_col(last_inter), obtem_lin(last_inter))
     inter_adjs = ()
 
-    # Add the bottom adjacent interception
+    # Add the bottom adjacent intersection
     if line > 0:
         inter_adjs += (cria_intersecao(chr(collumn + (ord("A") - 1) + 1), line),)
 
-    # Add the left adjacent interception
+    # Add the left adjacent intersection
     if collumn > 0:
         inter_adjs += (cria_intersecao(chr(collumn + (ord("A") - 1)), line + 1),)
 
-    # Add the right adjacent interception
+    # Add the right adjacent intersection
     if collumn + 2 <= ord(max_collumns) - (ord("A") - 1):
         inter_adjs += (cria_intersecao(chr(collumn + (ord("A") - 1) + 2), line + 1),)
 
-    # Add the top adjacent interception
+    # Add the top adjacent intersection
     if line + 2 <= max_lines:
         inter_adjs += (cria_intersecao(chr(collumn + (ord("A") - 1) + 1), line + 2),)
 
@@ -163,7 +163,7 @@ def obtem_intersecoes_adjacentes(
 
 
 # Order the Intersections by left to right, bottom to top
-def ordena_intersecoes(intersecoes: tuple) -> tuple:
+def ordena_intersecoes(intersecoes: tuple[intersecao]) -> tuple[intersecao]:
     """
     Sorts the intersections by their position from left to right and bottom to top.
 
@@ -199,64 +199,200 @@ def cria_pedra_neutra() -> pedra:
 
 
 # Verify if is pedra
-def eh_pedra(pedra: any) -> bool:
+def eh_pedra(p: any) -> bool:
     # Check if pedra is an integer
-    if type(pedra) != int:
+    if type(p) != int:
         return False
 
     # Check if pedra is one of the defined values
-    return pedra in (1, 2, 3)
+    return p in (1, 2, 3)
 
 
 # Verify if pedra is white
-def eh_pedra_branca(pedra: pedra) -> bool:
-    return pedra == 1
+def eh_pedra_branca(p: pedra) -> bool:
+    return p == 1
 
 
 # Verify if pedra is black
-def eh_pedra_preta(pedra: pedra) -> bool:
-    return pedra == 2
+def eh_pedra_preta(p: pedra) -> bool:
+    return p == 2
 
 
 # Verify if the stones are equal
-def pedras_iguais(pedra1: any, pedra2: any) -> bool:
+def pedras_iguais(p1: any, p2: any) -> bool:
     # Check if pedra1 and pedra 2 are valid
-    if not eh_pedra(pedra1) or not eh_pedra(pedra2):
+    if not eh_pedra(p1) or not eh_pedra(p2):
         return False
 
-    return pedra1 == pedra2
+    return p1 == p2
 
 
 # Transform pedra in string
-def pedra_para_str(pedra: pedra) -> str:
-    if eh_pedra_branca(pedra):
+def pedra_para_str(p: pedra) -> str:
+    if eh_pedra_branca(p):
         return "O"
-    elif eh_pedra_preta(pedra):
+    elif eh_pedra_preta(p):
         return "X"
     else:
         return "."
 
 
 # Check if pedra belongs to a player
-def eh_pedra_jogador(pedra: pedra) -> bool:
-    return eh_pedra_branca(pedra) or eh_pedra_preta(pedra)
+def eh_pedra_jogador(p: pedra) -> bool:
+    return eh_pedra_branca(p) or eh_pedra_preta(p)
 
 
 """
 Defining goban structure
 """
 
+
 # Create empty goban
-def cria_goban_vazio(size: int) -> goban:
+def cria_goban_vazio(
+    size: int,
+) -> goban:  # Verificar com o prof pois n é inicial, mas é vazio
+    # Check if size is an integer
     if type(size) != int:
-        raise ValueError('cria_goban_vazio: argumento invalido')
+        raise ValueError("cria_goban_vazio: argumento invalido")
 
-    if size not in (9,13,19):
-        raise ValueError('cria_goban_vazio: argumento invalido')
+    # Check if size is a valid size
+    if size not in (9, 13, 19):
+        raise ValueError("cria_goban_vazio: argumento invalido")
 
-    return [[ 0 for i in range(size)] for i in range(size)]
+    # Create all the columns
+    return [[0 for i in range(size)] for i in range(size)]
 
-print(cria_goban_vazio(10))
+
+# Create a goban with set values
+def cria_goban(
+    size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]
+) -> goban:
+    try:
+        go = cria_goban_vazio(size)
+    except:
+        raise ValueError("cria_goban_vazio: argumento invalido")
+
+    # Verify if each item is an intersecao
+    for inter in brancas + pretas:
+        if not eh_intersecao(inter):
+            raise ValueError("cria_goban_vazio: argumento invalido")
+
+        # Check if intersesao is valid for the terrain
+        if not eh_intersecao_valida(go, inter):
+            raise ValueError("cria_goban_vazio: argumento invalido")
+
+    # Place the white pedras
+    for inter in brancas:
+        # Verify if there are no stones that share the same intersecao
+        if inter in pretas:
+            raise ValueError("cria_goban_vazio: argumento invalido")
+        go = coloca_pedra(inter)
+
+    # Place the black pedras
+    for inter in pretas:
+        go = coloca_pedra(inter)
+
+    return go
+
+# Creates a copy of the goban
+def cria_copia_goban(go: goban) -> goban:
+    return go
+
+# Return the pedra in a given intersecao
+
+# Return a valid last intersection (top right) based on the territory
+def obtem_ultima_intersecao(go: goban) -> intersecao:
+    """
+    Returns the coordinates of the last intersection (top right) based on the given goban.
+
+    Args:
+    - go: A goban, where each element is a list representing a column of the territory.
+    Each cell of the column can be either 0, 1 or 2.
+
+    Returns:
+    - A intersecao with a string and an integer representing the coordinates of the last intersection (top right) of the goban.
+    """
+    return cria_intersecao(chr((ord("A") - 1) + len(go)), len(go[0]))
+
+
+# Verify if is goban
+def eh_goban(go: any) -> bool:
+    """
+    Checks if the given goban is valid.
+
+    Args:
+    - go: A goban, where each element is a column of the goban.
+    Each cell of the column can be either 0, 1 or 2.
+
+    Returns:
+    - True if the goban is valid, False otherwise.
+    """
+    # Check if goban is list
+    if not isinstance(go, list):
+        return False
+
+    first_column = go[0]
+    # Check if the goban is empty or larger than expected
+    if len(go) not in (9, 13, 19) or len(go) != len(first_column):
+        return False
+
+    # Check if the collumns have the same lenght
+    for column in go:
+        # Check if the arg is a list
+        if not isinstance(column, list):
+            return False
+
+        # Check if the column is empty or larger than expected
+        if len(column) not in (9, 13, 19):
+            return False
+
+        # Check if the collumn has the same lenght as the first collumn
+        if len(column) != len(first_column):
+            return False
+
+        # Check if the collumn has only 0, 1 or 2
+        for cell in column:
+            # Check if cell is int
+            if type(cell) != int:
+                return False
+
+            if cell not in (0, 1, 2):
+                return False
+
+    return True
+
+
+# Verify if the intersection is in the territory
+def eh_intersecao_valida(go: goban, inter: intersecao) -> bool:
+    """
+    Verifies if the given intersecao is within the territory.
+
+    Args:
+    - go: a goban, where each element is a list representing a column of the goban.
+    Each cell of the column can be either 0, 1 or 2.
+    - inter: A intersecao containing a string and an integer.
+
+    Returns:
+    - True if the intersection is within the territory, False otherwise.
+    """
+    last_inter = obtem_ultima_intersecao(go)
+    max_collumns, max_lines = obtem_col(last_inter), obtem_lin(last_inter)
+    collumn, line = obtem_col(inter), obtem_lin(inter)
+
+    # Check if the collumn is larger than the maximum allowed for collumns
+    if collumn > max_collumns:
+        return False
+
+    # Check if the line is larger than the maximum allowed for lines
+    return line <= max_lines
+
+
+# Place a pedra in goban
+def coloca_pedra(go: goban, inter: intersecao, p: pedra) -> goban:
+    inter = convert_intersecao(inter)
+    go[inter[0]][inter[1]] = p
+    return go
+
 
 """
 Auxiliary Functions
@@ -264,8 +400,8 @@ Auxiliary Functions
 """
 
 
-# Return the interseption in usable values for coding (A -> 0) (1 -> 0)
-def convert_intersecao(intersecao: tuple[str, int]) -> tuple[int, int]:
+# Return the intersecao in usable values for coding (A -> 0) (1 -> 0)
+def convert_intersecao(inter: intersecao) -> tuple[int, int]:
     """
     Converts the intersection coordinates from a tuple of strings and integers to a tuple of usable integers.
 
@@ -275,5 +411,5 @@ def convert_intersecao(intersecao: tuple[str, int]) -> tuple[int, int]:
     Returns:
     - A tuple containing the column number as an integer (starting from 0) and the line number as an integer (starting from 0).
     """
-    collumn, line = intersecao
+    collumn, line = obtem_col(inter), obtem_lin(inter)
     return (ord(collumn) - (ord("A") - 1) - 1, line - 1)

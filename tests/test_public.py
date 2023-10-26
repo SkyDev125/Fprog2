@@ -650,6 +650,7 @@ Preto (X) tem 28 pontos
             "G7",
             "H7",
         )
+        
 
         assert go_offline(9, ib, ip, "E5\nF5\nE5\nP\nP\n") == (True, ref)
 
