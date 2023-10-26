@@ -450,6 +450,54 @@ def gobans_iguais(go1: goban, go2: goban) -> bool:
     return go1 == go2
 
 
+# Return the territory as a string
+def goban_para_str(go: goban) -> str:
+    """
+    Returns a string representation of a goban, where each intersection is represented by an X, O or . depending on
+    whether it is black, white or empty, respectively.
+    The goban is formatted as a grid with letters representing columns and numbers representing rows.
+
+    Args:
+    - go: a goban, where each element is a list representing a column of the goban.
+    Each cell of the column can be a pedra(black or white) or not.
+
+    Returns:
+    - A string representation of the goban, formatted as a grid with letters representing columns and numbers
+    representing rows.
+    """
+    # Get the maximum collumns and lines
+    last_inter = obtem_ultima_intersecao(go)
+    max_columns, max_lines = obtem_col(last_inter), obtem_lin(last_inter)
+    max_columns = ord(max_columns) - (ord("A") - 1)
+
+    # Add a Letters line
+    s = (
+        ["  "]
+        + [" " + chr((ord("A") - 1) + x) for x in range(1, max_columns + 1)]
+        + ["\n"]
+    )
+
+    # Create the lines (number, values, number)
+    for x in range(max_lines, 0, -1):
+        # Create the values
+        string_terrain = [
+            " " + pedra_para_str(obtem_pedra(go, cria_intersecao(chr(ord("A") + p), x)))
+            for p in range(0, max_columns)
+        ]
+
+        # Add the lines to the string dynamically
+        if x > 9:
+            s += [str(x)] + string_terrain + [" " + str(x) + "\n"]
+        else:
+            s += [" " + str(x)] + string_terrain + ["  " + str(x) + "\n"]
+
+    # Add a Letters line
+    s += ["  "] + [" " + chr((ord("A") - 1) + x) for x in range(1, max_columns + 1)]
+
+    # Join the string
+    return "".join(s)
+
+
 """
 Auxiliary Functions
 
