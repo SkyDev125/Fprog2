@@ -107,10 +107,6 @@ def eh_intersecao(inter: any) -> bool:
 
 # Verify if the intersections are equal
 def intersecoes_iguais(inter1: any, inter2: any) -> bool:
-    # Check if intersecao1 and intersecao2 are valid
-    if not eh_intersecao(inter1) or not eh_intersecao(inter2):
-        return False
-
     return inter1 == inter2
 
 
@@ -220,10 +216,6 @@ def eh_pedra_preta(p: pedra) -> bool:
 
 # Verify if the stones are equal
 def pedras_iguais(p1: any, p2: any) -> bool:
-    # Check if pedra1 and pedra 2 are valid
-    if not eh_pedra(p1) or not eh_pedra(p2):
-        return False
-
     return p1 == p2
 
 
@@ -337,14 +329,6 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
     Raises:
     - ValueError: If the given goban or intersection are invalid.
     """
-    # Check if goban and intersection are valid
-    if not eh_goban(go) or not eh_intersecao(inter):
-        raise ValueError("obtem_cadeia: argumentos invalidos")
-
-    # Check if intersecao is part of goban
-    if not eh_intersecao_valida(go, inter):
-        raise ValueError("obtem_cadeia: argumentos invalidos")
-
     # Check if intersecao is free
     is_free = obtem_pedra(go, inter)
     visited = []
@@ -459,6 +443,11 @@ def eh_intersecao_valida(go: goban, inter: intersecao) -> bool:
 
     # Check if the line is larger than the maximum allowed for lines
     return line <= max_lines
+
+
+# Verify if gobans are equal
+def gobans_iguais(go1: goban, go2: goban) -> bool:
+    return go1 == go2
 
 
 """
