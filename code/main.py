@@ -242,7 +242,7 @@ Defining goban structure
 # Create empty goban
 def cria_goban_vazio(
     size: int,
-) -> goban:  # Verificar com o prof pois n é inicial, mas é vazio
+) -> goban:
     # Check if size is an integer
     if type(size) != int:
         raise ValueError("cria_goban_vazio: argumento invalido")
@@ -252,7 +252,7 @@ def cria_goban_vazio(
         raise ValueError("cria_goban_vazio: argumento invalido")
 
     # Create all the columns
-    return [[0 for i in range(size)] for i in range(size)]
+    return [[cria_pedra_neutra() for i in range(size)] for i in range(size)]
 
 
 # Create a goban with set values
@@ -321,7 +321,7 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
     Args:
     - go: a goban, where each element is a intersecao representing a column of the goban.
     Each cell of the column can be either 0 or 1.
-    - intersecao: A intersecao containing a string and an integer
+    - inter: A intersecao containing a string and an integer
 
     Returns:
     - A tuple of intersections representing a sequence of adjacent intersections that have the same value in the goban.
@@ -340,7 +340,7 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
         visited += chain
 
         # Check if the adjacent intersections are equal to the freedom
-        for inter in obtem_intersecoes_adjacentes(go, inter):
+        for inter in obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go)):
             if inter not in visited and obtem_pedra(go, inter) == is_free:
                 chain += recursive_check(go, inter, visited)
 
@@ -408,13 +408,13 @@ def eh_goban(go: any) -> bool:
         if len(column) != len(first_column):
             return False
 
-        # Check if the collumn has only 0, 1 or 2
+        # Check if the collumn has only stones
         for cell in column:
             # Check if cell is int
             if type(cell) != int:
                 return False
 
-            if cell not in (0, 1, 2):
+            if cell not in (cria_pedra_neutra(), cria_pedra_branca(), cria_pedra_preta()):
                 return False
 
     return True
