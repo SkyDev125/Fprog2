@@ -346,7 +346,7 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
 
         return chain
 
-    # Get the list of interceptions
+    # Get the list of intersections
     chain = recursive_check(go, inter, visited)
 
     return ordena_intersecoes(chain)
@@ -496,6 +496,36 @@ def goban_para_str(go: goban) -> str:
 
     # Join the string
     return "".join(s)
+
+# Return a tuple of intercections that are empty
+def obtem_territorios(go: goban) -> tuple[tuple[intersecao]]:
+    """
+    Returns the free chains in a goban (territories).
+
+    Args:
+    - go: A goban, where each element is a line representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+
+    Returns:
+    - A tuple of tuples representing free chains in the goban, sorted by their position from left to right
+    and bottom to top.
+    """
+    # Create a list of intersections
+    chain = ()   
+
+    size = len(go)
+    # Check all the intersections
+    for column in range(size):
+        for cell in range(size):
+            # Convert to intercesao (0 -> A) (0 -> 1)
+            inter = cria_intersecao(chr(ord('A') + cell), 1 + column)
+            
+            if inter not in chain:
+                # Check if the intercesao is free
+                if obtem_pedra(go, inter) == cria_pedra_neutra():
+                    chain += (obtem_cadeia(go, inter),) 
+
+    return ordena_intersecoes(chain)
 
 
 """
