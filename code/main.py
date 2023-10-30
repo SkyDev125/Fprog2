@@ -643,7 +643,7 @@ def get_chains(go: goban) -> tuple[tuple[intersecao]]:
     chain = ()
     visited = ()
 
-    size = len(go)
+    size = obtem_lin(obtem_ultima_intersecao(go))
     # Check all the intersections
     for cell in range(size):
         for collumn in range(size):
