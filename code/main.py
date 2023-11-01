@@ -86,27 +86,19 @@ def eh_intersecao(inter: any) -> bool:
     if len(inter) != 2:
         return False
 
-    # Create a set with all the valid strings
-    valid_strings = {chr(ord("A") + i) for i in range(19)}
-
-    # Check if the first element is a string
-    if not isinstance(inter[0], str):
+    # Try to create an intersecao with the values and evaluate the situation
+    try:
+        cria_intersecao(inter[0], inter[1])
+        return True
+    except:
         return False
-
-    # Check if the second element is a int
-    if type(inter[1]) != int:
-        return False
-
-    # Check if the first element is a valid string
-    if inter[0] not in valid_strings:
-        return False
-
-    # Check if the second element is a valid int
-    return 1 <= inter[1] <= 19
 
 
 # Verify if the intersections are equal
 def intersecoes_iguais(inter1: any, inter2: any) -> bool:
+    if not eh_intersecao(inter1) or not eh_intersecao(inter2):
+        return False
+
     return inter1 == inter2
 
 
@@ -135,7 +127,7 @@ def obtem_intersecoes_adjacentes(
     - A tuple containing the adjacent intersections of the given intersection in the territory,
     where each element is a tuple containing the column as a string and the line as an integer.
     """
-    collumn, line = convert_intersecao((obtem_col(inter), obtem_lin(inter)))
+    collumn, line = convert_intersecao(inter)
     max_collumns, max_lines = (obtem_col(last_inter), obtem_lin(last_inter))
     inter_adjs = ()
 
@@ -216,6 +208,9 @@ def eh_pedra_preta(p: pedra) -> bool:
 
 # Verify if the stones are equal
 def pedras_iguais(p1: any, p2: any) -> bool:
+    if not eh_pedra(p1) or not eh_pedra(p2):
+        return False
+
     return p1 == p2
 
 
@@ -262,22 +257,22 @@ def cria_goban(
     try:
         go = cria_goban_vazio(size)
     except:
-        raise ValueError("cria_goban_vazio: argumento invalido")
+        raise ValueError("cria_goban: argumentos invalidos")
 
     # Verify if each item is an intersecao
     for inter in brancas + pretas:
         if not eh_intersecao(inter):
-            raise ValueError("cria_goban_vazio: argumento invalido")
+            raise ValueError("cria_goban: argumentos invalidos")
 
         # Check if intersesao is valid for the terrain
         if not eh_intersecao_valida(go, inter):
-            raise ValueError("cria_goban_vazio: argumento invalido")
+            raise ValueError("cria_goban: argumentos invalidos")
 
     # Place the white pedras
     for inter in brancas:
         # Verify if there are no stones that share the same intersecao
         if inter in pretas:
-            raise ValueError("cria_goban_vazio: argumento invalido")
+            raise ValueError("cria_goban: argumentos invalidos")
         go = coloca_pedra(go, inter, cria_pedra_branca())
 
     # Place the black pedras
@@ -292,12 +287,6 @@ def cria_copia_goban(go: goban) -> goban:
     return [[go[column][line] for line in range(len(go))] for column in range(len(go))]
 
 
-# Return the pedra in a given intersecao
-def obtem_pedra(go: goban, inter: intersecao) -> pedra:
-    inter = convert_intersecao(inter)
-    return go[inter[0]][inter[1]]
-
-
 # Return a valid last intersection (top right) based on the territory
 def obtem_ultima_intersecao(go: goban) -> intersecao:
     """
@@ -310,7 +299,13 @@ def obtem_ultima_intersecao(go: goban) -> intersecao:
     Returns:
     - A intersecao with a string and an integer representing the coordinates of the last intersection (top right) of the goban.
     """
-    return cria_intersecao(chr((ord("A") - 1) + len(go)), len(go[0]))
+    return cria_intersecao(chr((ord("A") - 1) + len(go)), len(go))
+
+
+# Return the pedra in a given intersecao
+def obtem_pedra(go: goban, inter: intersecao) -> pedra:
+    inter = convert_intersecao(inter)
+    return go[inter[0]][inter[1]]
 
 
 # Return the chain of intersections
@@ -451,6 +446,9 @@ def eh_intersecao_valida(go: goban, inter: intersecao) -> bool:
 
 # Verify if gobans are equal
 def gobans_iguais(go1: goban, go2: goban) -> bool:
+    if not eh_goban(go1) or not eh_goban(go2):
+        return False
+
     return go1 == go2
 
 
@@ -538,7 +536,7 @@ def obtem_adjacentes_diferentes(
             for intr in obtem_intersecoes_adjacentes(
                 inter, obtem_ultima_intersecao(go)
             ):
-                if (intr not in new_chain) and not eh_pedra_jogador(
+                if intr not in new_chain and not eh_pedra_jogador(
                     obtem_pedra(go, intr)
                 ):
                     new_chain += (intr,)
@@ -546,14 +544,14 @@ def obtem_adjacentes_diferentes(
             for intr in obtem_intersecoes_adjacentes(
                 inter, obtem_ultima_intersecao(go)
             ):
-                if (intr not in new_chain) and eh_pedra_jogador(obtem_pedra(go, intr)):
+                if intr not in new_chain and eh_pedra_jogador(obtem_pedra(go, intr)):
                     new_chain += (intr,)
 
     return ordena_intersecoes(new_chain)
 
 
 # Return a new goban after a determined play
-def jogada(go: goban, inter: intersecao, p: pedra):
+def jogada(go: goban, inter: intersecao, p: pedra) -> goban:
     go = coloca_pedra(go, inter, p)
     intrs = obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go))
     chains = ()
@@ -592,17 +590,17 @@ def obtem_pedras_jogadores(go: goban) -> tuple[int, int]:
     """
     # Create the lists of occupied intersections
     all_chains = get_chains(go)
-    white_chains = ()
-    black_chains = ()
+    white_inters = ()
+    black_inters = ()
 
     # save all chains that are empty
     for chain in all_chains:
         if obtem_pedra(go, chain[0]) == cria_pedra_branca():
-            white_chains += chain
+            white_inters += chain
         elif obtem_pedra(go, chain[0]) == cria_pedra_preta():
-            black_chains += chain
+            black_inters += chain
 
-    return len(white_chains), len(black_chains)
+    return len(white_inters), len(black_inters)
 
 
 """
