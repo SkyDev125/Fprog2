@@ -54,7 +54,7 @@ def cria_intersecao(column: str, line: int) -> intersecao:
     if line < 1 or line > 19:
         raise ValueError("cria_intersecao: argumentos invalidos")
 
-    return (column, line)
+    return column, line
 
 
 # Return the column of intersecao
@@ -604,6 +604,48 @@ def obtem_pedras_jogadores(go: goban) -> tuple[int, int]:
 
 
 """
+Game Functions
+
+"""
+
+# Calculate the total points for each player
+def calcula_pontos(go: goban) -> tuple[int, int]:
+    # Add the occupied intersections points
+    inters_points = obtem_pedras_jogadores(go)
+    white_points = inters_points[0]
+    black_points = inters_points[1]
+
+    # Check empty territories
+    chains = obtem_territorios(go)
+
+    def same_player_chain(chain: tuple[intersecao]) -> bool:
+        first_stone = obtem_pedra(go, chain[0])
+        for inter in chain:
+            # Verify if all stones are from players
+            if not eh_pedra_jogador(obtem_pedra(go, inter)):
+                return False
+
+            # Verify if all stones in the chain belong to the same player
+            if not pedras_iguais(first_stone, obtem_pedra(go, inter)):
+                return False
+
+        return True
+
+    for chain in chains:
+        inters = obtem_adjacentes_diferentes(go, chain)
+
+        # Add points to white
+        if same_player_chain(inters) and eh_pedra_branca(obtem_pedra(go, inters[0])):
+            white_points += len(chain)
+
+        # Add points to black
+        if same_player_chain(inters) and eh_pedra_preta(obtem_pedra(go, inters[0])):
+            black_points += len(chain)
+
+    return white_points, black_points
+
+
+"""
 Auxiliary Functions
 
 """
@@ -654,3 +696,11 @@ def get_chains(go: goban) -> tuple[tuple[intersecao]]:
                 chain += (temp,)
 
     return chain
+
+
+ib = tuple(
+    str_para_intersecao(i) for i in ("C1", "C2", "C3", "D2", "D3", "D4", "A3", "B3")
+)
+ip = tuple(str_para_intersecao(i) for i in ("E4", "E5", "F4", "F5", "G6", "G7"))
+g = cria_goban(9, ib, ip)
+print(calcula_pontos(g))
