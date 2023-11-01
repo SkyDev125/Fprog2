@@ -622,8 +622,8 @@ Game Functions
 def calcula_pontos(go: goban) -> tuple[int, int]:
     # Add the occupied intersections points
     inters_points = obtem_pedras_jogadores(go)
-    if inters_points == (0,0):
-        return 0,0
+    if inters_points == (0, 0):
+        return 0, 0
     white_points = inters_points[0]
     black_points = inters_points[1]
 
@@ -708,18 +708,3 @@ def get_chains(go: goban) -> tuple[tuple[intersecao]]:
                 chain += (temp,)
 
     return chain
-
-
-ib = "C1,G1,C2,G2,C3,G3,A4,B4,C4,G4,H4,I4,A6,B6,C6,D6,E6,E7,F7,G7,H7,I7".split(
-    ","
-)
-ip = "D1,F1,D2,E2,F2,D3,E3,F3,F4,D4,E4,A5,B5,C5,D5,F5,G5,H5,I5,I6,H6,G6,F6".split(
-    ","
-)
-ib = tuple(str_para_intersecao(i) for i in ib)
-ip = tuple(str_para_intersecao(i) for i in ip)
-g = cria_goban(9, ib, ip)
-_ = jogada(g, cria_intersecao("E", 5), cria_pedra_branca())
-answer = (57, 24)
-print(goban_para_str(g))
-print(calcula_pontos(g))
