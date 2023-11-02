@@ -722,6 +722,32 @@ def turno_jogador(go: goban, p: pedra, prev_go: goban) -> bool:
 
 # Main Game Function
 def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool:
+    # Verify the white intersections
+    temp = ()
+    for intr in brancas:
+        if not eh_intersecao(intr):
+            try:
+                temp += (str_para_intersecao(intr),)
+            except:
+                raise ValueError("go: argumentos invalidos")
+        else:
+            temp += (intr,)
+
+    brancas = temp
+
+    # Verify the black intersections
+    temp = ()
+    for intr in pretas:
+        if not eh_intersecao(intr):
+            try:
+                temp += (str_para_intersecao(intr),)
+            except:
+                raise ValueError("go: argumentos invalidos")
+        else:
+            temp += (intr,)
+
+    pretas = temp
+
     # Try to create the goban
     try:
         go = cria_goban(size, brancas, pretas)
@@ -756,6 +782,10 @@ def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool
             break
         else:
             game_end = temp
+
+    print("Branco (O) tem " + str(white_points) + " pontos")
+    print("Preto (X) tem " + str(black_points) + " pontos")
+    print(goban_para_str(go))
 
     return white_points >= black_points
 
