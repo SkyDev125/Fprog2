@@ -293,7 +293,25 @@ def cria_goban(
 
 # Creates a copy of the goban
 def cria_copia_goban(go: goban) -> goban:
-    return [[go[column][line] for line in range(len(go))] for column in range(len(go))]
+    new_go = cria_goban_vazio(len(go))
+
+    # Copy the goban
+    for column in range(len(go)):
+        for line in range(len(go)):
+            if eh_pedra_branca(go[column][line]):
+                coloca_pedra(
+                    new_go,
+                    cria_intersecao(chr(ord("A") + column), line + 1),
+                    cria_pedra_branca(),
+                )
+            elif eh_pedra_preta(go[column][line]):
+                coloca_pedra(
+                    new_go,
+                    cria_intersecao(chr(ord("A") + column), line + 1),
+                    cria_pedra_preta(),
+                )
+
+    return new_go
 
 
 # Return a valid last intersection (top right) based on the territory
@@ -373,7 +391,7 @@ def remove_pedra(go: goban, inter: intersecao) -> goban:
 # Remove a chain of stones in goban
 def remove_cadeia(go: goban, chain: tuple[intersecao]) -> goban:
     for inter in chain:
-        go = remove_pedra(go, inter)
+        remove_pedra(go, inter)
     return go
 
 
@@ -414,15 +432,8 @@ def eh_goban(go: any) -> bool:
 
         # Check if the collumn has only stones
         for cell in column:
-            # Check if cell is int
-            if type(cell) != int:
-                return False
-
-            if cell not in (
-                cria_pedra_neutra(),
-                cria_pedra_branca(),
-                cria_pedra_preta(),
-            ):
+            # Check if cell is pedra
+            if not eh_pedra(cell):
                 return False
 
     return True
@@ -458,7 +469,17 @@ def gobans_iguais(go1: goban, go2: goban) -> bool:
     if not eh_goban(go1) or not eh_goban(go2):
         return False
 
-    return go1 == go2
+    # Check if gobans have the same size
+    if len(go1) != len(go2):
+        return False
+
+    # Check each stone in the goban
+    for column in range(len(go1)):
+        for line in range(len(go1)):
+            if not pedras_iguais(go1[column][line], go2[column][line]):
+                return False
+
+    return True
 
 
 # Return the territory as a string
@@ -686,7 +707,8 @@ def eh_jogada_legal(go: goban, inter: intersecao, p: pedra, prev_go: goban) -> b
 
         if (
             pedras_iguais(obtem_pedra(go_copy, intr), p)
-            and len(obtem_adjacentes_diferentes(go_copy, obtem_cadeia(go_copy, intr))) != 0
+            and len(obtem_adjacentes_diferentes(go_copy, obtem_cadeia(go_copy, intr)))
+            != 0
         ):
             return True
 
