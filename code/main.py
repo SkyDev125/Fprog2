@@ -677,14 +677,20 @@ def eh_jogada_legal(go: goban, inter: intersecao, p: pedra, prev_go: goban) -> b
     if gobans_iguais(go, prev_go):
         return False
 
-    # Trigger jogada again to verify if it's suicide
+    # Verify if the play is suicidal
     inters = obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go))
-    go = jogada(
-        go, inters[0], cria_pedra_branca() if eh_pedra_preta(p) else cria_pedra_preta()
-    )
 
-    # Verify if the play is a suicide
-    return obtem_pedra(go, inter) != cria_pedra_neutra()
+    for intr in inters:
+        if not eh_pedra_jogador(obtem_pedra(go, intr)):
+            return True
+
+        if (
+            pedras_iguais(obtem_pedra(go, intr), p)
+            and len(obtem_adjacentes_diferentes(go, obtem_cadeia(go, intr))) != 0
+        ):
+            return True
+
+    return False
 
 
 # Play a round of the game
@@ -713,9 +719,9 @@ def turno_jogador(go: goban, p: pedra, prev_go: goban) -> bool:
         jogada(go, inter, p)
         return True
 
+
 # Main Game Function
 def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool:
-    
     # Try to create the goban
     try:
         go = cria_goban(size, brancas, pretas)
@@ -732,14 +738,14 @@ def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool
         print("Branco (O) tem " + str(white_points) + " pontos")
         print("Preto (X) tem " + str(black_points) + " pontos")
         print(goban_para_str(go))
-        
+
         temp_go = cria_copia_goban(go)
 
         # Play and switch player
         if switcher:
             temp = not turno_jogador(go, cria_pedra_branca(), prev_go)
             switcher = False
-        else: 
+        else:
             temp = not turno_jogador(go, cria_pedra_preta(), prev_go)
             switcher = True
 
@@ -752,6 +758,7 @@ def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool
             game_end = temp
 
     return white_points >= black_points
+
 
 """
 Auxiliary Functions
