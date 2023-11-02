@@ -344,9 +344,9 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
         visited += chain
 
         # Check if the adjacent intersections are equal to the pedra
-        for inter in obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go)):
-            if inter not in visited and obtem_pedra(go, inter) == is_free:
-                chain += recursive_check(go, inter, visited)
+        for intr in obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go)):
+            if intr not in visited and obtem_pedra(go, intr) == is_free:
+                chain += recursive_check(go, intr, visited)
 
         return chain
 
