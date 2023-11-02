@@ -657,6 +657,102 @@ def calcula_pontos(go: goban) -> tuple[int, int]:
     return white_points, black_points
 
 
+# Verify if the play is valid
+def eh_jogada_legal(go: goban, inter: intersecao, p: pedra, prev_go: goban) -> bool:
+    # Avoid Changing the goban by creating a copy
+    go = cria_copia_goban(go)
+
+    # Verify if the intersecao is valid
+    if not eh_intersecao_valida(go, inter):
+        return False
+
+    # Verify if intersecao isnt occupied already
+    if obtem_pedra(go, inter) != cria_pedra_neutra():
+        return False
+
+    # Do the play
+    go = jogada(go, inter, p)
+
+    # Verify if the play is repeated (ko rule)
+    if gobans_iguais(go, prev_go):
+        return False
+
+    # Trigger jogada again to verify if it's suicide
+    inters = obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go))
+    go = jogada(
+        go, inters[0], cria_pedra_branca() if eh_pedra_preta(p) else cria_pedra_preta()
+    )
+
+    # Verify if the play is a suicide
+    return obtem_pedra(go, inter) != cria_pedra_neutra()
+
+
+# Play a round of the game
+def turno_jogador(go: goban, p: pedra, prev_go: goban) -> bool:
+    while True:
+        # Get the input from the player
+        play = input(
+            "Escreva uma intersecao ou 'P' para passar [" + pedra_para_str(p) + "]:"
+        )
+
+        # Return if the player wants to pass
+        if play == "P":
+            return False
+
+        # Try to create a intersecao with the input, reset if it doesnt work
+        try:
+            inter = str_para_intersecao(play)
+        except:
+            continue
+
+        # Verify if the play is valid
+        if not eh_jogada_legal(go, inter, p, prev_go):
+            continue
+
+        # Play the game and return
+        jogada(go, inter, p)
+        return True
+
+# Main Game Function
+def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool:
+    
+    # Try to create the goban
+    try:
+        go = cria_goban(size, brancas, pretas)
+    except:
+        raise ValueError("go: argumentos invalidos")
+
+    prev_go = cria_copia_goban(go)
+
+    # Time to play the game
+    switcher = False
+    game_end = False
+    while True:
+        white_points, black_points = calcula_pontos(go)
+        print("Branco (O) tem " + str(white_points) + " pontos")
+        print("Preto (X) tem " + str(black_points) + " pontos")
+        print(goban_para_str(go))
+        
+        temp_go = cria_copia_goban(go)
+
+        # Play and switch player
+        if switcher:
+            temp = not turno_jogador(go, cria_pedra_branca(), prev_go)
+            switcher = False
+        else: 
+            temp = not turno_jogador(go, cria_pedra_preta(), prev_go)
+            switcher = True
+
+        prev_go = temp_go
+
+        # Check if the game is over
+        if temp and game_end:
+            break
+        else:
+            game_end = temp
+
+    return white_points >= black_points
+
 """
 Auxiliary Functions
 
@@ -708,3 +804,4 @@ def get_chains(go: goban) -> tuple[tuple[intersecao]]:
                 chain += (temp,)
 
     return chain
+
