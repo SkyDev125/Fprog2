@@ -90,7 +90,7 @@ def eh_intersecao(inter: any) -> bool:
     try:
         cria_intersecao(inter[0], inter[1])
         return True
-    except Exception:
+    except (ValueError, TypeError, IndexError):
         return False
 
 
@@ -257,7 +257,7 @@ def cria_goban(
     # Check if size is valid
     try:
         go = cria_goban_vazio(size)
-    except Exception:
+    except (ValueError, TypeError, IndexError):
         raise ValueError("cria_goban: argumentos invalidos")
 
     # Verify if both arguments are tuples
@@ -708,7 +708,7 @@ def turno_jogador(go: goban, p: pedra, prev_go: goban) -> bool:
         # Try to create a intersecao with the input, reset if it doesnt work
         try:
             inter = str_para_intersecao(play)
-        except Exception:
+        except (ValueError, TypeError, IndexError):
             continue
 
         # Verify if the play is valid
@@ -732,7 +732,7 @@ def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool
         if not eh_intersecao(intr):
             try:
                 temp += (str_para_intersecao(intr),)
-            except Exception:
+            except (ValueError, TypeError, IndexError):
                 raise ValueError("go: argumentos invalidos")
         else:
             temp += (intr,)
@@ -745,7 +745,7 @@ def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool
         if not eh_intersecao(intr):
             try:
                 temp += (str_para_intersecao(intr),)
-            except Exception:
+            except (ValueError, TypeError, IndexError):
                 raise ValueError("go: argumentos invalidos")
         else:
             temp += (intr,)
@@ -755,7 +755,7 @@ def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool
     # Try to create the goban
     try:
         go = cria_goban(size, brancas, pretas)
-    except Exception:
+    except (ValueError, TypeError, IndexError):
         raise ValueError("go: argumentos invalidos")
 
     prev_go = cria_copia_goban(go)
