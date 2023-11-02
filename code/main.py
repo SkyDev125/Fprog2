@@ -722,6 +722,10 @@ def turno_jogador(go: goban, p: pedra, prev_go: goban) -> bool:
 
 # Main Game Function
 def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool:
+    # Verify if brancas or pretas are tuples
+    if not isinstance(brancas, tuple) or not isinstance(pretas, tuple):
+        raise ValueError("go: argumentos invalidos")
+
     # Verify the white intersections
     temp = ()
     for intr in brancas:
@@ -841,4 +845,3 @@ def get_chains(go: goban) -> tuple[tuple[intersecao]]:
                 chain += (temp,)
 
     return chain
-
