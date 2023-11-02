@@ -345,7 +345,7 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
 
         # Check if the adjacent intersections are equal to the pedra
         for intr in obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go)):
-            if intr not in visited and obtem_pedra(go, intr) == is_free:
+            if intr not in visited and pedras_iguais(obtem_pedra(go, intr), is_free):
                 chain += recursive_check(go, intr, visited)
 
         return chain
@@ -527,7 +527,7 @@ def obtem_territorios(go: goban) -> tuple[tuple[intersecao]]:
 
     # save all chains that are empty
     for chain in all_chains:
-        if obtem_pedra(go, chain[0]) == cria_pedra_neutra():
+        if pedras_iguais(obtem_pedra(go, chain[0]), cria_pedra_neutra()):
             chains += (chain,)
 
     return chains
@@ -604,9 +604,9 @@ def obtem_pedras_jogadores(go: goban) -> tuple[int, int]:
 
     # save all chains that are empty
     for chain in all_chains:
-        if obtem_pedra(go, chain[0]) == cria_pedra_branca():
+        if pedras_iguais(obtem_pedra(go, chain[0]), cria_pedra_branca()):
             white_inters += chain
-        elif obtem_pedra(go, chain[0]) == cria_pedra_preta():
+        elif pedras_iguais(obtem_pedra(go, chain[0]), cria_pedra_preta()):
             black_inters += chain
 
     return len(white_inters), len(black_inters)
