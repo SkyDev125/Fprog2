@@ -660,33 +660,33 @@ def calcula_pontos(go: goban) -> tuple[int, int]:
 # Verify if the play is valid
 def eh_jogada_legal(go: goban, inter: intersecao, p: pedra, prev_go: goban) -> bool:
     # Avoid Changing the goban by creating a copy
-    go = cria_copia_goban(go)
+    go_copy = cria_copia_goban(go)
 
     # Verify if the intersecao is valid
-    if not eh_intersecao_valida(go, inter):
+    if not eh_intersecao_valida(go_copy, inter):
         return False
 
     # Verify if intersecao isnt occupied already
-    if obtem_pedra(go, inter) != cria_pedra_neutra():
+    if obtem_pedra(go_copy, inter) != cria_pedra_neutra():
         return False
 
     # Do the play
-    go = jogada(go, inter, p)
+    jogada(go_copy, inter, p)
 
     # Verify if the play is repeated (ko rule)
-    if gobans_iguais(go, prev_go):
+    if gobans_iguais(go_copy, prev_go):
         return False
 
     # Verify if the play is suicidal
-    inters = obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go))
+    inters = obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go_copy))
 
     for intr in inters:
-        if not eh_pedra_jogador(obtem_pedra(go, intr)):
+        if not eh_pedra_jogador(obtem_pedra(go_copy, intr)):
             return True
 
         if (
-            pedras_iguais(obtem_pedra(go, intr), p)
-            and len(obtem_adjacentes_diferentes(go, obtem_cadeia(go, intr))) != 0
+            pedras_iguais(obtem_pedra(go_copy, intr), p)
+            and len(obtem_adjacentes_diferentes(go_copy, obtem_cadeia(go_copy, intr))) != 0
         ):
             return True
 
