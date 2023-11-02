@@ -90,7 +90,7 @@ def eh_intersecao(inter: any) -> bool:
     try:
         cria_intersecao(inter[0], inter[1])
         return True
-    except:
+    except ValueError:
         return False
 
 
@@ -257,7 +257,7 @@ def cria_goban(
     # Check if size is valid
     try:
         go = cria_goban_vazio(size)
-    except:
+    except ValueError:
         raise ValueError("cria_goban: argumentos invalidos")
 
     # Verify if both arguments are tuples
@@ -389,8 +389,8 @@ def eh_goban(go: any) -> bool:
     Returns:
     - True if the goban is valid, False otherwise.
     """
-    # Check if goban is list
-    if not isinstance(go, list):
+    # Check if goban is list and not empty
+    if not isinstance(go, list) or len(go) == 0:
         return False
 
     first_column = go[0]
@@ -708,7 +708,7 @@ def turno_jogador(go: goban, p: pedra, prev_go: goban) -> bool:
         # Try to create a intersecao with the input, reset if it doesnt work
         try:
             inter = str_para_intersecao(play)
-        except:
+        except ValueError:
             continue
 
         # Verify if the play is valid
@@ -728,7 +728,7 @@ def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool
         if not eh_intersecao(intr):
             try:
                 temp += (str_para_intersecao(intr),)
-            except:
+            except ValueError:
                 raise ValueError("go: argumentos invalidos")
         else:
             temp += (intr,)
@@ -741,7 +741,7 @@ def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool
         if not eh_intersecao(intr):
             try:
                 temp += (str_para_intersecao(intr),)
-            except:
+            except ValueError:
                 raise ValueError("go: argumentos invalidos")
         else:
             temp += (intr,)
@@ -751,7 +751,7 @@ def go(size: int, brancas: tuple[intersecao], pretas: tuple[intersecao]) -> bool
     # Try to create the goban
     try:
         go = cria_goban(size, brancas, pretas)
-    except:
+    except ValueError:
         raise ValueError("go: argumentos invalidos")
 
     prev_go = cria_copia_goban(go)
