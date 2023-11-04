@@ -528,11 +528,11 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
     - A tuple of intersections representing a sequence of adjacent intersections that have
     the same value in the goban.
     """
-    # Check if intersecao is free
+    # Gets the pedra of the intersecao
     stone = obtem_pedra(go, inter)
     visited = []
 
-    # Create recursive function to add the adjacent intersections that are the same stone
+    # Create recursive function to add the adjacent intersections that are the same pedra
     def recursive_check(go, inter, visited):
         # Add the intersecao to the list
         chain = (inter,)
