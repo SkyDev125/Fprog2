@@ -982,7 +982,7 @@ def turno_jogador(go: goban, p: pedra, prev_go: goban) -> bool:
     (Has to be the previous state of the game before the given goban).
 
     Returns:
-    - True if the player passed, False otherwise.
+    - False if the player passed, True otherwise.
     """
     while True:
         # Get the input from the player
