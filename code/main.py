@@ -1135,10 +1135,10 @@ def get_chains(go: goban) -> tuple[tuple[intersecao]]:
 
     size = obtem_lin(obtem_ultima_intersecao(go))
     # Check all the intersections
-    for cell in range(size):
+    for line in range(size):
         for collumn in range(size):
             # Convert to intercesao (0 -> A) (0 -> 1)
-            inter = cria_intersecao(chr(ord("A") + collumn), 1 + cell)
+            inter = cria_intersecao(chr(ord("A") + collumn), 1 + line)
 
             if inter not in visited:
                 temp = obtem_cadeia(go, inter)
