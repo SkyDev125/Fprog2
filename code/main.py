@@ -532,7 +532,7 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
     stone = obtem_pedra(go, inter)
     visited = []
 
-    # Create recursive function to check if the adjacent intersections are also the same as freedom
+    # Create recursive function to add the adjacent intersections that are the same stone
     def recursive_check(go, inter, visited):
         # Add the intersecao to the list
         chain = (inter,)
