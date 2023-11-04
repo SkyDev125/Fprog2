@@ -529,7 +529,7 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
     the same value in the goban.
     """
     # Check if intersecao is free
-    is_free = obtem_pedra(go, inter)
+    stone = obtem_pedra(go, inter)
     visited = []
 
     # Create recursive function to check if the adjacent intersections are also the same as freedom
@@ -540,7 +540,7 @@ def obtem_cadeia(go: goban, inter: intersecao) -> tuple[intersecao]:
 
         # Check if the adjacent intersections are equal to the pedra
         for intr in obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(go)):
-            if intr not in visited and pedras_iguais(obtem_pedra(go, intr), is_free):
+            if intr not in visited and pedras_iguais(obtem_pedra(go, intr), stone):
                 chain += recursive_check(go, intr, visited)
 
         return chain
