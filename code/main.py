@@ -883,7 +883,7 @@ def jogada(go: goban, inter: intersecao, p: pedra) -> goban:
     for intr in intrs:
         if (
             eh_pedra_jogador(obtem_pedra(go, intr))
-            and (p != obtem_pedra(go, intr))
+            and not pedras_iguais(p, obtem_pedra(go, intr))
             and (intr not in chains)
         ):
             chains += (obtem_cadeia(go, intr),)
@@ -1016,7 +1016,7 @@ def eh_jogada_legal(
         return False
 
     # Verify if intersecao isnt occupied already
-    if obtem_pedra(go_copy, inter) != cria_pedra_neutra():
+    if not pedras_iguais(obtem_pedra(go_copy, inter), cria_pedra_neutra()):
         return False
 
     # Do the play
@@ -1027,26 +1027,10 @@ def eh_jogada_legal(
         return False
 
     # Verify if the play is suicidal
-    inters = obtem_intersecoes_adjacentes(
-        inter, obtem_ultima_intersecao(go_copy)
+    return (
+        len(obtem_adjacentes_diferentes(go_copy, obtem_cadeia(go_copy, inter)))
+        != 0
     )
-
-    for intr in inters:
-        if not eh_pedra_jogador(obtem_pedra(go_copy, intr)):
-            return True
-
-        if (
-            pedras_iguais(obtem_pedra(go_copy, intr), p)
-            and len(
-                obtem_adjacentes_diferentes(
-                    go_copy, obtem_cadeia(go_copy, intr)
-                )
-            )
-            != 0
-        ):
-            return True
-
-    return False
 
 
 # Play a round of the game
